@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { deleteVercellAction } from "../../lib/action";
 import { getvercell } from "../../lib/vercell";
 
 type Props = { params: Promise<{ id: string }> };
@@ -80,12 +81,28 @@ async function VercellDetail({ params }: Props) {
           </p>
         </section>
 
-        <Link
-          href="/vercel"
-          className="self-start rounded-full border border-white/20 px-6 py-3 font-semibold text-white transition hover:border-white/50 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
-        >
-          목록으로 돌아가기
-        </Link>
+        <div className="flex flex-wrap gap-4">
+          <Link
+            href={`/vercel/${vercell.id}/edit`}
+            className="rounded-full bg-indigo-300 px-6 py-3 font-semibold text-slate-950 transition hover:bg-indigo-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+          >
+            수정하기
+          </Link>
+          <form action={deleteVercellAction.bind(null, vercell.id)}>
+            <button
+              type="submit"
+              className="rounded-full border border-rose-300/40 px-6 py-3 font-semibold text-rose-200 transition hover:border-rose-300/70 hover:bg-rose-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+            >
+              삭제하기
+            </button>
+          </form>
+          <Link
+            href="/vercel"
+            className="rounded-full border border-white/20 px-6 py-3 font-semibold text-white transition hover:border-white/50 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
+          >
+            목록으로 돌아가기
+          </Link>
+        </div>
       </article>
     </main>
   );

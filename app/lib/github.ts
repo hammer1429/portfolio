@@ -54,3 +54,28 @@ export async function createGithubPost(input: {
   const doc = await githubModel.create(input);
   return toGithubPost(doc);
 }
+
+export async function updateGithubPost(
+  id: string,
+  input: { title: string; content: string },
+): Promise<GithubPost | undefined> {
+  if (!Types.ObjectId.isValid(id)) {
+    return undefined;
+  }
+
+  await connectDB();
+  const doc = await githubModel
+    .findByIdAndUpdate(id, input, { new: true, runValidators: true })
+    .lean();
+  return doc ? toGithubPost(doc as GithubPostDocLike) : undefined;
+}
+
+export async function deleteGithubPost(id: string): Promise<boolean> {
+  if (!Types.ObjectId.isValid(id)) {
+    return false;
+  }
+
+  await connectDB();
+  const result = await githubModel.deleteOne({ _id: id });
+  return result.deletedCount === 1;
+}

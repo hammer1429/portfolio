@@ -1,6 +1,7 @@
 import { connectDB } from "./mongodb";
 import { vercell as vercellmodel } from "../models/vercell";
 import { io } from "next/cache";
+import { Types } from "mongoose";
 
 export type vercell = {
   id: string;
@@ -33,6 +34,10 @@ export async function getvercells(): Promise<vercell[]> {
 }
 
 export async function getvercell(id: string): Promise<vercell | undefined> {
+  if (!Types.ObjectId.isValid(id)) {
+    return undefined;
+  }
+
   await io();
   await connectDB();
   const doc = await vercellmodel.findById(id).lean();
@@ -46,4 +51,29 @@ export async function createvercell(input: {
   await connectDB();
   const doc = await vercellmodel.create(input);
   return tovercell(doc);
+}
+
+export async function updatevercell(
+  id: string,
+  input: { title: string; content: string },
+): Promise<vercell | undefined> {
+  if (!Types.ObjectId.isValid(id)) {
+    return undefined;
+  }
+
+  await connectDB();
+  const doc = await vercellmodel
+    .findByIdAndUpdate(id, input, { new: true, runValidators: true })
+    .lean();
+  return doc ? tovercell(doc as vercellDocLike) : undefined;
+}
+
+export async function deletevercell(id: string): Promise<boolean> {
+  if (!Types.ObjectId.isValid(id)) {
+    return false;
+  }
+
+  await connectDB();
+  const result = await vercellmodel.deleteOne({ _id: id });
+  return result.deletedCount === 1;
 }
