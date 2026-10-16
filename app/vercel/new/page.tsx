@@ -1,0 +1,83 @@
+import Link from "next/link";
+import { createVercellAction } from "../../lib/action";
+
+export default function NewVercellPage() {
+  return (
+    <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-6 py-16 text-white sm:px-12">
+      <div className="flex w-full max-w-5xl flex-col gap-10">
+        <section
+          aria-labelledby="new-vercell-title"
+          className="relative isolate overflow-hidden rounded-3xl border border-white/10 bg-slate-950/35 px-7 py-10 shadow-2xl shadow-indigo-950/30 sm:px-12 sm:py-12"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute -right-24 -top-24 -z-10 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl"
+          />
+          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-300/25 bg-indigo-300/10 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-indigo-200">
+            <span
+              aria-hidden="true"
+              className="h-2 w-2 rounded-full bg-indigo-300"
+            />
+            DEPLOYMENT
+          </p>
+          <h1
+            id="new-vercell-title"
+            className="text-3xl font-semibold tracking-tight sm:text-4xl"
+          >
+            새 Vercel 글 작성
+          </h1>
+          <p className="mt-3 leading-7 text-slate-300">
+            배포 기록이나 프로젝트 소식을 작성합니다.
+          </p>
+        </section>
+
+        <form
+          action={createVercellAction}
+          className="flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-slate-950/20 sm:p-8"
+        >
+          <div className="flex flex-col gap-2">
+            <label htmlFor="title" className="text-sm font-semibold text-white">
+              제목
+            </label>
+            <input
+              id="title"
+              name="title"
+              type="text"
+              required
+              className="rounded-xl border border-white/15 bg-slate-950/50 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-indigo-300"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="content"
+              className="text-sm font-semibold text-white"
+            >
+              내용
+            </label>
+            <textarea
+              id="content"
+              name="content"
+              rows={8}
+              required
+              className="resize-y rounded-xl border border-white/15 bg-slate-950/50 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-indigo-300"
+            />
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <button
+              type="submit"
+              className="rounded-full bg-indigo-300 px-6 py-3 font-semibold text-slate-950 transition hover:bg-indigo-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            >
+              등록하기
+            </button>
+            <Link
+              href="/vercel"
+              className="rounded-full border border-white/20 px-6 py-3 font-semibold text-white transition hover:border-white/50 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
+            >
+              목록으로 돌아가기
+            </Link>
+          </div>
+        </form>
+      </div>
+    </main>
+  );
+}
