@@ -10,6 +10,23 @@ export type GithubPost = {
   createdAt: string;
 };
 
+export function getGithubPostUrl(content: string): string | undefined {
+  for (const match of content.matchAll(/https?:\/\/[^\s]+/gi)) {
+    const url = match[0].replace(/[.,!?;:)\]}]+$/, "");
+
+    try {
+      const parsedUrl = new URL(url);
+      if (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") {
+        return url;
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return undefined;
+}
+
 type GithubPostDocLike = {
   _id: unknown;
   title: string;

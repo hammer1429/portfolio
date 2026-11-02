@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { getvercells } from "../lib/vercell";
+import { deleteVercellAction } from "../lib/action";
+import { getVercellPostUrl, getvercells } from "../lib/vercell";
 
 async function VercellList() {
   const vercells = await getvercells();
@@ -9,19 +10,57 @@ async function VercellList() {
     <section aria-label="Vercel 게시글">
       {vercells.length > 0 ? (
         <ul className="flex flex-col gap-4">
-          {vercells.map((item) => (
-            <li key={item.id}>
-              <Link
-                href={`/vercel/${item.id}`}
-                className="group block rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-slate-950/20 transition hover:-translate-y-1 hover:border-indigo-300/30 hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
+          {vercells.map((item) => {
+            const url = getVercellPostUrl(item.content);
+
+            return (
+              <li
+                key={item.id}
+                className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-xl shadow-slate-950/20 transition hover:border-indigo-300/30 hover:bg-white/[0.07]"
               >
-                <h2 className="text-lg font-semibold text-white transition group-hover:text-indigo-200">
-                  {item.title}
-                </h2>
-                <p className="mt-3 text-sm text-slate-400">{item.createdAt}</p>
-              </Link>
-            </li>
-          ))}
+                {url ? (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-300"
+                  >
+                    <h2 className="text-lg font-semibold text-white transition group-hover:text-indigo-200">
+                      {item.title}
+                    </h2>
+                  </a>
+                ) : (
+                  <Link
+                    href={`/vercel/${item.id}`}
+                    className="group block p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-300"
+                  >
+                    <h2 className="text-lg font-semibold text-white transition group-hover:text-indigo-200">
+                      {item.title}
+                    </h2>
+                    <p className="mt-3 text-sm text-slate-400">
+                      {item.createdAt}
+                    </p>
+                  </Link>
+                )}
+                <div className="flex gap-3 border-t border-white/10 px-6 py-4">
+                  <Link
+                    href={`/vercel/${item.id}/edit`}
+                    className="rounded-full bg-indigo-300 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-indigo-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200"
+                  >
+                    수정
+                  </Link>
+                  <form action={deleteVercellAction.bind(null, item.id)}>
+                    <button
+                      type="submit"
+                      className="rounded-full border border-rose-300/40 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-300/70 hover:bg-rose-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                    >
+                      삭제
+                    </button>
+                  </form>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <p className="rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-8 text-slate-300">
